@@ -61,9 +61,7 @@ The script generates the following files:
 
 If you run the script multiple times, it will automatically delete any previously generated files to prevent duplication.
 
-### Example Code
-
-Below is a simplified version of the code:
+### Code
 
 ```python
 # import dependencies
