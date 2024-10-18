@@ -1,5 +1,4 @@
 
-```markdown
 # Data Cleaning Project
 
 This Python project performs data cleaning on CSV or Excel files by handling missing values, removing duplicate records, and saving the cleaned data to a new file. The script also checks and removes any duplicate files generated during multiple runs of the program.
