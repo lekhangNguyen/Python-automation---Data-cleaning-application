@@ -5,6 +5,12 @@ import os
 data_path = 'sales.xlsx'
 data_name = 'sales'
 """
+#remove duplicated files function
+def remove_existing_file(file_name):
+    if os.path.exists(file_name):
+        os.remove(file_name)
+        print(f"Existing file '{file_name}' removed.")
+
 #main function
 def data_cleaning(data_path, data_name):
 
@@ -40,9 +46,13 @@ def data_cleaning(data_path, data_name):
 
     #saving the duplicates (only create files when theres duplicate value)
     if total_duplicate > 0:
-        duplicate_record= data[duplicates]
-        duplicate_record.to_csv(f'{data_name}_duplicates.csv', index=None)
-
+        duplicate_file_name = f'{data_name}_duplicates.csv'
+        # Remove existing duplicate file
+        remove_existing_file(duplicate_file_name)
+        # Save new duplicates file
+        duplicate_record = data[duplicates]
+        duplicate_record.to_csv(duplicate_file_name, index=None)
+        print(f"Duplicate records saved to '{duplicate_file_name}'")
     #deleting duplicates
     df = data.drop_duplicates()
 
