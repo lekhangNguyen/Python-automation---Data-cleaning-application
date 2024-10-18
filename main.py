@@ -23,7 +23,7 @@ def data_cleaning(data_path, data_name):
         if data_path.endswith('.csv'):
             print('Dataset is csv!')
             #ignore errors if any rows have problem
-            data = pd.read_csv(data_path,encording_errors ='ignore' )
+            data = pd.read_csv(data_path,encoding_errors ='ignore')
 
         elif data_path.endswith('.xlsx'):
             print('Dataset is excel file!')
@@ -42,7 +42,7 @@ def data_cleaning(data_path, data_name):
     duplicates = data.duplicated()
     total_duplicate = data.duplicated().sum()
 
-    print(f'DATASET TOTAL MISSING VALUES:\n{total_duplicate}\n')
+    print(f'DATASET TOTAL DUPLICATE VALUES:\n{total_duplicate}\n')
 
     #saving the duplicates (only create files when theres duplicate value)
     if total_duplicate > 0:
@@ -51,7 +51,7 @@ def data_cleaning(data_path, data_name):
         remove_existing_file(duplicate_file_name)
         # Save new duplicates file
         duplicate_record = data[duplicates]
-        duplicate_record.to_csv(duplicate_file_name, index=None)
+        duplicate_record.to_csv(duplicate_file_name, index=False)
         print(f"Duplicate records saved to '{duplicate_file_name}'")
     #deleting duplicates
     df = data.drop_duplicates()
