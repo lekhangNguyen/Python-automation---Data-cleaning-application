@@ -112,7 +112,7 @@ def data_cleaning(data_path, data_name):
         remove_existing_file(duplicate_file_name)
         # Save new duplicates file
         duplicate_record = data[duplicates]
-        duplicate_record.to_csv(duplicate_file_name, index=None)
+        duplicate_record.to_csv(duplicate_file_name, index=False)
         print(f"Duplicate records saved to '{duplicate_file_name}'")
 
     # Deleting duplicates
@@ -142,7 +142,7 @@ def data_cleaning(data_path, data_name):
     # Remove existing cleaned file
     remove_existing_file(cleaned_file_name)
     # Save new cleaned dataset
-    df.to_csv(cleaned_file_name, index=None)
+    df.to_csv(cleaned_file_name, index=False)
     print(f"Cleaned dataset saved to '{cleaned_file_name}'")
 
 if __name__ == "__main__":
