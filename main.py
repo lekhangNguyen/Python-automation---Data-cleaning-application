@@ -7,7 +7,7 @@ import xlrd
 import random
 import openpyxl
 data_path = 'sales.xlsx'
-data_name = ''
+data_name = 'sales'
 
 #checking if the path exists
 if not os.path.exists(data_path):
@@ -68,3 +68,8 @@ for col in columns:
         df.dropna(subset=col, inplace=True)
 
 print(f'DATA SET IS CLEANED!\nNumber of Rows:{df.shape[0]}\nNumber of Columns:{df.shape[1]}')
+
+#saving the cleaned dataset
+df.to_csv(f'{data_name}Cleaned_data.csv')
+print('Dataset is saved!')
+
