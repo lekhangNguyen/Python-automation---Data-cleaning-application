@@ -165,5 +165,5 @@ This project is licensed under the MIT License
 
 ### Instructions:
 
+- Make sure you follow the prerequisites
 - Replace the project name and description to reflect the specific purpose of your project.
-- Add a license section if necessary, or customize it based on your needs.
