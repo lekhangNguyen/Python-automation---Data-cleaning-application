@@ -1,102 +1,167 @@
-Here’s the code for the `README.md` file that you can paste directly into your GitHub repository:
 
 ```markdown
 # Data Cleaning Project
 
-This project is designed to clean datasets by identifying and removing duplicate entries, handling missing values, and saving cleaned versions of the dataset. The script works with both CSV and Excel file formats.
+This Python project performs data cleaning on CSV or Excel files by handling missing values, removing duplicate records, and saving the cleaned data to a new file. The script also checks and removes any duplicate files generated during multiple runs of the program.
 
 ## Features
-- Supports **CSV** and **Excel** (`.xlsx`) files.
-- Identifies and removes duplicate records.
-- Saves duplicate records in a separate file.
-- Handles missing values:
-  - Fills missing numeric values with the column mean.
-  - Drops rows with missing non-numeric (object) values.
-- Saves the cleaned dataset to a new file.
+
+- Supports `.csv` and `.xlsx` file formats.
+- Handles missing values by:
+  - Filling missing numeric values with the mean.
+  - Dropping rows with missing non-numeric values.
+- Identifies and removes duplicate rows.
+- Saves duplicate records and the cleaned dataset as separate `.csv` files.
+- Removes previously generated duplicate and cleaned files before saving new ones to avoid file duplication.
 
 ## Prerequisites
-Before running the script, ensure that you have the following installed:
-- [Python 3.x](https://www.python.org/downloads/)
-- [Pandas](https://pandas.pydata.org/) library (Install using `pip install pandas`)
 
-## Installation
-1. Clone this repository or download the script.
-2. Install the required dependencies by running:
-    ```bash
-    pip install pandas
-    ```
+Before running this project, you need to install the following Python packages:
 
-## How to Use
-1. Place your dataset (`.csv` or `.xlsx`) in the same directory as the script, or provide the full path to the file.
-2. Run the script using:
-    ```bash
-    python data_cleaning.py
-    ```
-3. You will be prompted to enter:
-   - **Dataset path**: The file path to your dataset.
-   - **Dataset name**: A name that will be used for saving the output files.
+- **pandas**: For handling and manipulating data.
+- **os**: A built-in module for interacting with the file system.
 
-Example:
+You can install `pandas` via `pip`:
 
 ```bash
+pip install pandas
+```
+
+## Usage
+
+1. Clone or download the repository.
+2. Ensure you have installed the necessary dependencies (see Prerequisites).
+3. Place your dataset in the same folder as the script or provide the correct path to it.
+
+### Running the Script
+
+Run the script using Python:
+
+```bash
+python data_cleaning.py
+```
+
+The script will prompt you to provide:
+- The file path of the dataset.
+- A name for the dataset (this will be used in naming the output files).
+
+Example input:
+
+```
 Please enter dataset path: sales.xlsx
 Please enter dataset name: sales
 ```
 
-4. The script will process the dataset:
-   - If duplicate records are found, they will be saved to a file named `<data_name>_duplicates.csv`.
-   - The cleaned dataset will be saved as `<data_name>_Cleaned_data.csv`.
-   
-   If you run the script multiple times, the existing duplicate and cleaned files will be replaced.
+### Output Files
 
-## Script Details
+The script generates the following files:
+- **sales_duplicates.csv**: Contains the duplicate rows from the dataset.
+- **sales_Cleaned_data.csv**: Contains the cleaned dataset with duplicates removed and missing values handled.
 
-### Main Functionality
-- **Duplicate Handling**: The script checks for duplicate rows and removes them. Duplicate records are saved to a separate CSV file.
-- **Missing Value Handling**:
-  - For numeric columns, missing values are replaced with the column's mean.
-  - For non-numeric columns, rows with missing values are dropped.
+If you run the script multiple times, it will automatically delete any previously generated files to prevent duplication.
 
-### Example Output
-- After running the script on a dataset named `sales.xlsx`, you will get:
-  - `sales_duplicates.csv` (if duplicates exist).
-  - `sales_Cleaned_data.csv` (the cleaned dataset).
+### Example Code
 
-### File Overwriting
-If files with the same name already exist (e.g., `sales_duplicates.csv` or `sales_Cleaned_data.csv`), the script will automatically remove them before saving new files to avoid duplicates.
+Below is a simplified version of the code:
 
-## Example Files
+```python
+# import dependencies
+import pandas as pd
+import os
 
-### Input File: `sales.xlsx`
+# Function to check if a file already exists and remove it
+def remove_existing_file(file_name):
+    if os.path.exists(file_name):
+        os.remove(file_name)
+        print(f"Existing file '{file_name}' removed.")
+
+# Main function
+def data_cleaning(data_path, data_name):
+    # Checking if the path exists
+    if not os.path.exists(data_path):
+        print("Incorrect path!")
+        return
+    else:
+        # Checking the file type
+        if data_path.endswith('.csv'):
+            print('Dataset is csv!')
+            data = pd.read_csv(data_path, encoding_errors='ignore')
+        elif data_path.endswith('.xlsx'):
+            print('Dataset is excel file!')
+            data = pd.read_excel(data_path)
+        else:
+            print('Unknown type!')
+            return
+
+    # Showing number of records
+    print(f'DATASET CONTAINS:\n{data.shape[0]} ROWS\n{data.shape[1]} COLUMNS\n')
+
+    # Cleaning process
+
+    # Checking duplicate
+    duplicates = data.duplicated()
+    total_duplicate = data.duplicated().sum()
+
+    print(f'DATASET TOTAL DUPLICATE RECORDS:\n{total_duplicate}\n')
+
+    # Saving the duplicates (only create files when there's a duplicate value)
+    if total_duplicate > 0:
+        duplicate_file_name = f'{data_name}_duplicates.csv'
+        # Remove existing duplicate file
+        remove_existing_file(duplicate_file_name)
+        # Save new duplicates file
+        duplicate_record = data[duplicates]
+        duplicate_record.to_csv(duplicate_file_name, index=None)
+        print(f"Duplicate records saved to '{duplicate_file_name}'")
+
+    # Deleting duplicates
+    df = data.drop_duplicates()
+
+    # Find missing values
+    total_missing_value = df.isnull().sum().sum()  # Total missing values
+    missing_value_column = df.isnull().sum()  # Total missing values in each column
+
+    print(f'DATASET HAS TOTAL:\n{total_missing_value} missing values\n')
+    print(f'DATASET CONTAINS MISSING VALUE BY COLUMNS\n{missing_value_column}')
+
+    # Dealing with missing values
+    columns = df.columns
+    for col in columns:
+        # Filling mean for numeric columns
+        if df[col].dtype in (int, float):
+            df[col] = df[col].fillna(df[col].mean())
+        else:
+            # Dropping rows with missing non-numeric columns
+            df.dropna(subset=[col], inplace=True)
+
+    print(f'DATASET IS CLEANED!\nNumber of Rows: {df.shape[0]}\nNumber of Columns: {df.shape[1]}')
+
+    # Saving the cleaned dataset
+    cleaned_file_name = f'{data_name}_Cleaned_data.csv'
+    # Remove existing cleaned file
+    remove_existing_file(cleaned_file_name)
+    # Save new cleaned dataset
+    df.to_csv(cleaned_file_name, index=None)
+    print(f"Cleaned dataset saved to '{cleaned_file_name}'")
+
+if __name__ == "__main__":
+    data_path = input("Please enter dataset path: ")
+    data_name = input("Please enter dataset name: ")
+    
+    # Calling the function
+    data_cleaning(data_path, data_name)
 ```
-| OrderID | Product | Quantity | Price |
-|---------|---------|----------|-------|
-| 1       | A       | 10       | 100   |
-| 2       | B       | 5        | 50    |
-| 1       | A       | 10       | 100   |
-| 3       | C       | 2        | 30    |
-```
 
-### Output Files:
-1. **Duplicates File**: `sales_duplicates.csv`
-    ```
-    | OrderID | Product | Quantity | Price |
-    |---------|---------|----------|-------|
-    | 1       | A       | 10       | 100   |
-    ```
+### Notes
 
-2. **Cleaned Dataset**: `sales_Cleaned_data.csv`
-    ```
-    | OrderID | Product | Quantity | Price |
-    |---------|---------|----------|-------|
-    | 1       | A       | 10       | 100   |
-    | 2       | B       | 5        | 50    |
-    | 3       | C       | 2        | 30    |
-    ```
+- Ensure your dataset file path and name are correct when prompted by the script.
+- If there are no duplicates or missing values, the respective sections will not generate files.
+- The script is designed to handle only `.csv` and `.xlsx` files; other formats will result in an error message.
+  
+### License
 
-## Contributing
-If you'd like to contribute to this project, feel free to submit a pull request or open an issue.
+This project is licensed under the MIT License
 
-## License
-This project is licensed under the MIT License.
-```
+### Instructions:
+- Replace the project name and description to reflect the specific purpose of your project.
+- Add a license section if necessary, or customize it based on your needs.
