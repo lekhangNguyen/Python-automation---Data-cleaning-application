@@ -1,4 +1,3 @@
-
 # Data Cleaning Project
 
 This Python project performs data cleaning on CSV and Excel files by handling missing values, removing duplicate records, and saving the cleaned data to a new file. The script also checks and removes any duplicate files generated during multiple runs of the program.
@@ -19,11 +18,12 @@ Before running this project, you need to install the following Python packages:
 
 - **pandas**: For handling and manipulating data.
 - **os**: A built-in module for interacting with the file system.
-
-You can install `pandas` via `pip`:
+- **openpyxlsx**: To read and write Excel files.
+  You can install `pandas` via `pip`:
 
 ```bash
 pip install pandas
+pip install openpyxl
 ```
 
 ## Usage
@@ -41,6 +41,7 @@ python data_cleaning.py
 ```
 
 The script will prompt you to provide:
+
 - The file path of the dataset.
 - A name for the dataset (this will be used in naming the output files).
 
@@ -54,6 +55,7 @@ Please enter dataset name: sales
 ### Output Files
 
 The script generates the following files:
+
 - **sales_duplicates.csv**: Contains the duplicate rows from the dataset.
 - **sales_Cleaned_data.csv**: Contains the cleaned dataset with duplicates removed and missing values handled.
 
@@ -146,7 +148,7 @@ def data_cleaning(data_path, data_name):
 if __name__ == "__main__":
     data_path = input("Please enter dataset path: ")
     data_name = input("Please enter dataset name: ")
-    
+
     # Calling the function
     data_cleaning(data_path, data_name)
 ```
@@ -156,11 +158,12 @@ if __name__ == "__main__":
 - Ensure your dataset file path and name are correct when prompted by the script.
 - If there are no duplicates or missing values, the respective sections will not generate files.
 - The script is designed to handle only `.csv` and `.xlsx` files; other formats will result in an error message.
-  
+
 ### License
 
 This project is licensed under the MIT License
 
 ### Instructions:
+
 - Replace the project name and description to reflect the specific purpose of your project.
 - Add a license section if necessary, or customize it based on your needs.
